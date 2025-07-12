@@ -1,0 +1,44 @@
+﻿@page
+@model Artist
+
+<div class="artist-details">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="@Model.UrlImg" alt="@Model.Name" class="img-fluid rounded" />
+        </div>
+        <div class="col-md-8">
+            <h1>@Model.Name</h1>
+
+            <h3 class="mt-4">Альбомы исполнителя:</h3>
+            @if (Model.Albums?.Any() == true)
+            {
+                <div class="row">
+                    @foreach (var album in Model.Albums)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <img src="@album.UrlImg" class="card-img-top" alt="@album.Name">
+                                <div class="card-body">
+                                    <h5 class="card-title">@album.Name</h5>
+                                    <a asp-controller="Album" asp-action="Details"
+                                       asp-route-id="@album.Id" class="btn btn-primary">
+                                        Подробнее
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>У этого исполнителя пока нет альбомов.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Редактировать</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+</div>
