@@ -1,0 +1,48 @@
+﻿@model FavoritesViewModel
+
+<h2>Избранное</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <h3>Артисты</h3>
+        @foreach (var artist in Model.Artists)
+        {
+            <div class="card mb-3">
+                <img src="@artist.UrlImg" class="card-img-top" alt="@artist.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@artist.Name</h5>
+                    <a asp-controller="Artist" asp-action="Details" asp-route-id="@artist.Id"
+                       class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-4">
+        <h3>Музыка</h3>
+        @foreach (var song in Model.Songs)
+        {
+            <div class="card mb-3">
+                <img src="@song.UrlSong" class="card-img-top" alt="@song.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@song.Name</h5>
+                    <a asp-controller="Artist" asp-action="Details" asp-route-id="@song.Id"
+                       class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-4">
+        <h3>Альбомы</h3>
+        @foreach (var album in Model.Albums)
+        {
+            <div class="card mb-3">
+                <img src="@album.UrlImg" class="card-img-top" alt="@album.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@album.Name</h5>
+                    <a asp-controller="Artist" asp-action="Details" asp-route-id="@album.Id"
+                       class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,5 +1,31 @@
-﻿@page
+﻿@using Microsoft.AspNetCore.Identity
+@using Music.Data.Repositories.Interfaces
 @model Artist
+@inject UserManager<User> UserManager
+@inject IArtistRepository ArtistRepo
+
+@{
+    var userId = UserManager.GetUserId(User);
+    var isFavorite = userId != null && await ArtistRepo.IsFavoriteForUserAsync(Model.Id, int.Parse(userId));
+}
+
+<button class="btn @(isFavorite ? "btn-warning" : "btn-outline-secondary")"
+        id="favoriteBtn"
+        data-type="artist"
+        data-id="@Model.Id">
+    @if (isFavorite)
+    {
+        <i class="fas fa-star">
+            В избранном
+        </i>
+    }
+    else
+    {
+        <i class="far fa-star">
+            Добавить в избранное
+        </i>
+    }
+</button>
 
 <div class="artist-details">
     <div class="row">

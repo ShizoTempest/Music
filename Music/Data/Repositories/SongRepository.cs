@@ -54,5 +54,13 @@ namespace Music.Data.Repositories
         {
             return await _context.Songs.Where(s => s.Id == id).ToListAsync();
         }
+        public async Task<List<Song>> GetFavoriteSongsAsync(int userId)
+        {
+            return await _context.FavoriteSongs
+                .Where(fs => fs.UserId == userId)
+                .Include(fs => fs.Song)
+                .Select(fs => fs.Song)
+                .ToListAsync();
+        }
     }
 }

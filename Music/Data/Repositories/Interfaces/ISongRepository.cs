@@ -11,5 +11,6 @@ namespace Music.Data.Repositories.Interfaces
         Task DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
         Task<IEnumerable<Song>> GetSongsByAlbumIdAsync(int albumId);
+        Task<List<Song>> GetFavoriteSongsAsync(int userId);
     }
 }

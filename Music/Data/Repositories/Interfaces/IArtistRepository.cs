@@ -12,5 +12,7 @@ namespace Music.Data.Repositories.Interfaces
         Task DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
         Task<List<Album>> GetAlbumsByArtistIdAsync(int artistId);
+        Task<List<Artist>> GetFavoriteArtistsAsync(int userId);
+        Task<bool> IsFavoriteForUserAsync(int artistId, int userId);
     }
 }

@@ -74,5 +74,18 @@ namespace Music.Data.Repositories
 
             return (items, paginationInfo);
         }
+        public async Task<List<Artist>> GetFavoriteArtistsAsync(int userId)
+        {
+            return await _context.FavoriteArtists
+                .Where(fa => fa.UserId == userId)
+                .Include(fa => fa.Artist)
+                .Select(fa => fa.Artist)
+                .ToListAsync();
+        }
+        public async Task<bool> IsFavoriteForUserAsync(int artistId, int userId)
+        {
+            return await _context.FavoriteArtists
+                .AnyAsync(fa => fa.ArtistId == artistId && fa.UserId == userId);
+        }
     }
 }
