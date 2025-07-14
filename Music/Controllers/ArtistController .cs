@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Music.Data.Repositories.Interfaces;
 using Music.Models;
+using Music.Services;
 
 namespace Music.Controllers
 {
@@ -8,7 +9,15 @@ namespace Music.Controllers
     {
         private readonly IArtistRepository _artistRepository;
         private readonly IAlbumRepository _albumRepository;
+        private readonly UploadcareService _uploadcareService;
 
+        public ArtistController(
+            IArtistRepository artistRepo,
+            UploadcareService uploadcareService)
+        {
+            _artistRepository = artistRepo;
+            _uploadcareService = uploadcareService;
+        }
         public ArtistController(
             IArtistRepository artistRepository,
             IAlbumRepository albumRepository)
@@ -30,12 +39,27 @@ namespace Music.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Artist artist)
+        public async Task<IActionResult> Create(
+    [Bind("Id,Name")] Artist artist,
+    IFormFile imageFile)
         {
             if (ModelState.IsValid)
             {
-                await _artistRepository.AddAsync(artist);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    // Загрузка изображения
+                    if (imageFile != null)
+                    {
+                        artist.UrlImg = await _uploadcareService.UploadFileAsync(imageFile);
+                    }
+
+                    await _artistRepository.AddAsync(artist);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Ошибка загрузки: {ex.Message}");
+                }
             }
             return View(artist);
         }
@@ -52,7 +76,10 @@ namespace Music.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Artist artist)
+        public async Task<IActionResult> Edit(
+    int id,
+    [Bind("Id,Name,UrlImg")] Artist artist,
+    IFormFile imageFile)
         {
             if (id != artist.Id)
             {
@@ -61,8 +88,21 @@ namespace Music.Controllers
 
             if (ModelState.IsValid)
             {
-                await _artistRepository.UpdateAsync(artist);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    // Обновление изображения (если выбрано новое)
+                    if (imageFile != null)
+                    {
+                        artist.UrlImg = await _uploadcareService.UploadFileAsync(imageFile);
+                    }
+
+                    await _artistRepository.UpdateAsync(artist);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Ошибка: {ex.Message}");
+                }
             }
             return View(artist);
         }

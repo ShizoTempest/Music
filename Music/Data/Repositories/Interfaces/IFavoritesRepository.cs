@@ -21,8 +21,8 @@ namespace Music.Data.Repositories.Interfaces
         Task<bool> IsSongFavoriteAsync(int userId, int songId);
         Task<List<Song>> GetFavoriteSongsAsync(int userId);
 
-        Task<bool> ToggleArtistFavoriteAsync(string userId, int artistId);
-        Task<bool> ToggleSongFavoriteAsync(string userId, int artistId);
-        Task<bool> ToggleAlbumFavoriteAsync(string userId, int artistId);
+        Task<bool> ToggleArtistFavoriteAsync(int userId, int artistId);
+        Task<bool> ToggleSongFavoriteAsync(int userId, int artistId);
+        Task<bool> ToggleAlbumFavoriteAsync(int userId, int artistId);
     }
 }
