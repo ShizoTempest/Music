@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Music.Data.Repositories.Interfaces;
+using Music.Filters;
 using Music.Models;
 using Music.Services;
 
@@ -26,9 +27,16 @@ namespace Music.Controllers
             _albumRepository = albumRepository;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index([FromQuery] ArtistFilter filter)
         {
-            var artists = await _artistRepository.GetAllAsync();
+            var artists = await _artistRepository.GetFilteredAsync(filter);
+            var totalCount = await _artistRepository.GetFilteredAsync(filter);
+
+            ViewBag.Filter = filter;
+            ViewBag.TotalCount = totalCount;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)filter.PageSize.Value);
+
             return View(artists);
         }
 
@@ -144,5 +152,6 @@ namespace Music.Controllers
             ViewBag.PaginationInfo = paginationInfo;
             return View(artists);
         }
+
     }
 }

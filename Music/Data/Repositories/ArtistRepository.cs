@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Music.Data.Repositories.Interfaces;
+using Music.Filters;
 using Music.Models;
 
 namespace Music.Data.Repositories
@@ -86,6 +87,37 @@ namespace Music.Data.Repositories
         {
             return await _context.FavoriteArtists
                 .AnyAsync(fa => fa.ArtistId == artistId && fa.UserId == userId);
+        }
+        public async Task<(IEnumerable<Artist>, int)> GetFilteredAsync(ArtistFilter filter)
+        {
+            var query = _context.Artists
+                .Include(a => a.Albums)
+                .AsQueryable();
+
+            query = filter.ApplyFilter(query);
+
+            // Сортировка
+            if (!string.IsNullOrEmpty(filter.SortBy))
+            {
+                query = filter.SortBy switch
+                {
+                    "name" => filter.SortDesc
+                        ? query.OrderByDescending(a => a.Name)
+                        : query.OrderBy(a => a.Name),
+                    "created" => filter.SortDesc
+                        ? query.OrderByDescending(a => DateTime.UtcNow)
+                        : query.OrderBy(a => DateTime.UtcNow),
+                    _ => query
+                };
+            }
+
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .Skip((filter.Page.Value - 1) * filter.PageSize.Value)
+                .Take(filter.PageSize.Value)
+                .ToListAsync();
+
+            return (items, totalCount);
         }
     }
 }

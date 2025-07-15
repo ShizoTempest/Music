@@ -1,4 +1,5 @@
-﻿using Music.Models;
+﻿using Music.Filters;
+using Music.Models;
 
 namespace Music.Data.Repositories.Interfaces
 {
@@ -14,5 +15,6 @@ namespace Music.Data.Repositories.Interfaces
         Task<List<Album>> GetAlbumsByArtistIdAsync(int artistId);
         Task<List<Artist>> GetFavoriteArtistsAsync(int userId);
         Task<bool> IsFavoriteForUserAsync(int artistId, int userId);
+        Task<dynamic> GetFilteredAsync(ArtistFilter filter);
     }
 }
